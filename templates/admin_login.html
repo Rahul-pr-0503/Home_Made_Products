@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+<h2>Admin Login</h2>
+<form method="post" style="max-width:420px;">
+  <label>Password</label>
+  <input type="password" name="password" required />
+  <br><br>
+  <button class="btn">Login</button>
+</form>
+{% endblock %}

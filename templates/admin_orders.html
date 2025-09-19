@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+
+<head>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+<div class="container mt-4">
+  <h2 class="fw-bold mb-4">📦 All Orders</h2>
+
+  {% if orders %}
+  <div class="row">
+    {% for o in orders %}
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <h5 class="fw-bold">Order #{{ o.id }}</h5>
+            <span class="badge bg-info text-dark">{{ o.status }}</span>
+          </div>
+          <p class="text-muted mb-1">Placed on: {{ o.created_at }}</p>
+
+          <hr>
+
+          <!-- Buyer Info -->
+          <p><strong>Customer:</strong> {{ o.buyer_name }} </p>
+          <p><strong>Email:</strong> {{ o.user_email }}</p>
+          <p><strong>Phone:</strong> {{ o.buyer_phone }}</p>
+          <p><strong>Address:</strong> {{ o.buyer_address }}</p>
+
+          <hr>
+
+          <!-- Items -->
+          <h6>Items:</h6>
+          <ul class="list-unstyled">
+            {% for it in o['items'] %}
+            <li>🛒 {{ it.qty }} × {{ it.name }} ({{ format_currency(it.price) }})</li>
+            {% endfor %}
+          </ul>
+
+          <p class="fw-bold mt-2">Total: {{ format_currency(o.total) }}</p>
+
+          <form method="post" action="{{ url_for('admin_update_order_status', oid=o.id) }}" class="mt-3">
+            <div class="input-group">
+              <select name="status" class="form-select">
+                <option value="pending" {% if o.status=="pending" %}selected{% endif %}>Pending</option>
+                <option value="Paid" {% if o.status=="Paid" %}selected{% endif %}>Paid</option>
+                <option value="Shipped" {% if o.status=="Shipped" %}selected{% endif %}>Shipped</option>
+                <option value="Delivered" {% if o.status=="Delivered" %}selected{% endif %}>Delivered</option>
+                <option value="Cancelled" {% if o.status=="Cancelled" %}selected{% endif %}>Cancelled</option>
+              </select>
+              <input type="text" name="txn_id" placeholder="Txn ID" class="form-control" value="{{ o.txn_id or '' }}">
+              <button class="btn btn-success">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No orders found.</p>
+  {% endif %}
+</div>
+{% endblock %}

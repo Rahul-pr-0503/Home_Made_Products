@@ -1,0 +1,84 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f8; color: #111; }
+a { text-decoration: none; color: inherit; }
+.header { background: #111; color: #fff; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+.header a { color: #fff; margin-right: 14px; }
+.container { max-width: 1000px; margin: 0 auto; padding: 18px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.card { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.card img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; }
+.btn { display:inline-block; padding:10px 14px; border-radius:10px; border:0; background:#111; color:#fff; cursor:pointer; }
+.btn.secondary { background:#444; }
+.btn.small { padding: 6px 10px; font-size: 14px; }
+input, textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd; }
+label { display:block; margin: 8px 0 6px; font-weight: 600; }
+.form-row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav-right a { margin-left: 16px; }
+.flash { padding:10px 12px; border-radius: 10px; margin-bottom: 12px; }
+.flash.success { background:#e7f8ec; }
+.flash.error { background:#fde7ea; }
+.table { width:100%; border-collapse: collapse; background:#fff; border-radius: 12px; overflow: hidden; }
+.table th, .table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+.table th { background:#fafafa; }
+.total { font-size: 18px; font-weight: 700; text-align: right; margin-top: 10px; }
+footer { text-align:center; padding: 20px; color:#666; }
+/* Flipkart Style Auth */
+.auth-form {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.auth-form h2 {
+  color: #2874f0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  background: #2874f0;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.auth-form button:hover {
+  background: #0d5adb;
+}
+
+/* Orders Page */
+.order-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.order-card h5 {
+  color: #2874f0;
+  margin-bottom: 10px;
+}
+
+.order-card .status {
+  font-size: 14px;
+  font-weight: bold;
+  color: green;
+}
+

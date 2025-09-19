@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block content %}
+
+<head>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+<div class="container">
+  <div class="row g-4">
+    <!-- Left: Images -->
+    <div class="col-md-6">
+      <div class="card shadow-sm p-3">
+        {% if product['image_filename'] %}
+        <div class="row">
+          <div class="col-3 d-none d-md-block">
+            <!-- thumbnails -->
+            <div class="d-flex flex-column gap-2">
+              <img src="{{ url_for('static', filename='uploads/' ~ product['image_filename']) }}"
+                class="img-thumbnail thumb-img mb-2" style="cursor:pointer; height:70px; object-fit:cover;"
+                onclick="document.getElementById('mainImg').src=this.src">
+              <!-- placeholder for additional thumbs if you had multiple images -->
+            </div>
+          </div>
+          <div class="col-12 col-md-9 text-center">
+            <img id="mainImg" src="{{ url_for('static', filename='uploads/' ~ product['image_filename']) }}"
+              class="img-fluid rounded" style="max-height:420px; object-fit:contain;">
+          </div>
+        </div>
+        {% else %}
+        <div class="text-center p-5 text-muted">No image available</div>
+        {% endif %}
+      </div>
+
+      <!-- small product info cards -->
+      <div class="d-flex gap-3 mt-3">
+        <div class="card flex-fill shadow-sm p-3 text-center">
+          <h6 class="mb-1">Delivery</h6>
+          <small class="text-muted">Quick local delivery available</small>
+        </div>
+        <div class="card flex-fill shadow-sm p-3 text-center">
+          <h6 class="mb-1">Quality</h6>
+          <small class="text-muted">100% Homemade & Fresh</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Details & Purchase -->
+    <div class="col-md-6">
+      <div class="card shadow-sm p-4">
+        <h2 class="fw-bold mb-2">{{ product['name'] }}</h2>
+        <p class="text-muted mb-3">{{ product['description'][:180] }}{% if product['description']|length > 180 %}...{%
+          endif %}</p>
+
+        <div class="d-flex align-items-center mb-3">
+          <h3 class="text-success me-3">₹{{ "%.2f"|format(product['price']) }}</h3>
+          <span
+            class="badge bg-{{ 'success' if product['stock']>5 else 'warning text-dark' if product['stock']>0 else 'danger' }}">
+            {% if product['stock'] > 5 %}In Stock{% elif product['stock'] > 0 %}Limited{% else %}Out of Stock{% endif %}
+          </span>
+        </div>
+
+        <!-- ratings & offers -->
+        <div class="mb-3">
+          <small class="text-muted">⭐ 4.7 • 1.2k ratings & 300 reviews</small>
+        </div>
+
+        <!-- Quantity & Add to Cart / Buy Now -->
+        <form method="post" action="{{ url_for('add_to_cart', pid=product['id']) }}" class="mb-3">
+          <div class="row g-2 align-items-center">
+            <div class="col-auto">
+              <label class="form-label mb-0">Qty</label>
+              <input type="number" name="qty" value="1" min="1" max="{{ product['stock'] }}" class="form-control"
+                style="width:90px;">
+            </div>
+            <div class="col">
+              {% if product['stock'] > 0 %}
+              <button class="btn btn-primary btn-lg w-100">➕ Add to Cart</button>
+              {% else %}
+              <button class="btn btn-secondary btn-lg w-100" disabled>Out of Stock</button>
+              {% endif %}
+            </div>
+          </div>
+        </form>
+
+        <div class="d-flex gap-2 mb-3">
+          <a href="{{ url_for('product_detail', pid=product['id']) }}" class="btn btn-outline-secondary">❤ Add to
+            Wishlist</a>
+          <a href="#details" class="btn btn-outline-info">More details</a>
+        </div>
+
+        <!-- seller / guarantees -->
+        <div class="mt-3">
+          <p class="mb-1"><strong>Sold by:</strong> <span class="text-muted">HomeMade Store</span></p>
+          <p class="mb-0"><strong>Estimated Delivery:</strong> <span class="text-muted">2-4 business days</span></p>
+        </div>
+      </div>
+
+      <!-- Price box & quick actions -->
+      <div class="card shadow-sm mt-3 p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <small class="text-muted">Total</small>
+            <div class="fw-bold fs-5">₹{{ "%.2f"|format(product['price']) }}</div>
+          </div>
+          <div class="text-end">
+            <small class="text-muted d-block">Pay with UPI</small>
+            <div class="badge bg-light text-dark border">Scan QR at checkout</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Tabs: Description, Specifications, Reviews -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card shadow-sm p-3" id="details">
+        <ul class="nav nav-tabs mb-3" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#desc" type="button"
+              role="tab">Description</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#specs" type="button"
+              role="tab">Specifications</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reviews" type="button"
+              role="tab">Reviews</button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="desc" role="tabpanel">
+            <p class="mb-0">{{ product['description'] }}</p>
+          </div>
+
+          <div class="tab-pane fade" id="specs" role="tabpanel">
+            <table class="table table-sm mt-2">
+              <tbody>
+                <tr>
+                  <th style="width:220px;">Price</th>
+                  <td>₹{{ "%.2f"|format(product['price']) }}</td>
+                </tr>
+                <tr>
+                  <th>Stock</th>
+                  <td>{{ product['stock'] }}</td>
+                </tr>
+                <tr>
+                  <th>Category</th>
+                  <td>Homemade</td>
+                </tr>
+                <tr>
+                  <th>SKU</th>
+                  <td>PRD-{{ product['id'] }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane fade" id="reviews" role="tabpanel">
+            <div class="mb-2">
+              <strong>Customer Reviews</strong>
+            </div>
+            <div class="list-group">
+              <div class="list-group-item">
+                <strong>Riya</strong> <small class="text-muted"> — 5 days ago</small>
+                <div>★★★★★</div>
+                <p class="mb-0">Loved the taste and packaging. Will order again!</p>
+              </div>
+              <div class="list-group-item">
+                <strong>Rahul</strong> <small class="text-muted"> — 10 days ago</small>
+                <div>★★★★☆</div>
+                <p class="mb-0">Good product but delivery took a bit longer.</p>
+              </div>
+              <!-- placeholder – real reviews should come from DB -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Related products (simple horizontal scroll) -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <h5 class="mb-3">You may also like</h5>
+      <div class="d-flex gap-3 overflow-auto pb-2">
+        {% for p in products[:6] %}
+        {% if p.id != product['id'] %}
+        <div class="card" style="width:160px; flex:0 0 auto;">
+          <img src="{{ url_for('static', filename='uploads/' ~ p.image_filename) }}"
+            style="height:110px; object-fit:contain;" class="card-img-top p-2">
+          <div class="card-body p-2">
+            <h6 class="card-title small text-truncate">{{ p.name }}</h6>
+            <p class="mb-1 small text-success">₹{{ "%.2f"|format(p.price) }}</p>
+            <a href="{{ url_for('product_detail', pid=p.id) }}" class="btn btn-sm btn-outline-primary w-100">View</a>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- small inline styles -->
+<style>
+  .thumb-img {
+    border-radius: 8px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width:767px) {
+    .thumb-img {
+      display: none;
+    }
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+
+<h2 class="fw-bold mb-4">🛒 Your Shopping Cart</h2>
+
+{% if items %}
+<div class="row">
+  <!-- Cart Items -->
+  <div class="col-md-8">
+    <form method="post" action="{{ url_for('cart_update') }}">
+      <div class="list-group">
+        {% for it in items %}
+        <div class="list-group-item d-flex align-items-center justify-content-between shadow-sm mb-3 rounded cart-item">
+          <div class="d-flex align-items-center">
+            <!-- Product Image -->
+            {% if it.image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ it.image) }}" class="img-thumbnail me-3"
+              style="width:80px; height:80px; object-fit:contain;">
+            {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center me-3"
+              style="width:80px; height:80px; border-radius:6px;">
+              <span class="text-muted small">No Image</span>
+            </div>
+            {% endif %}
+
+            <!-- Product Info -->
+            <div>
+              <h6 class="mb-1">{{ it.name }}</h6>
+              <p class="mb-0 text-muted">Price: {{ format_currency(it.price) }}</p>
+            </div>
+          </div>
+
+          <!-- Qty + Subtotal -->
+          <div class="text-end">
+            <input type="number" min="0" name="qty_{{ it.id }}" value="{{ it.qty }}"
+              class="form-control form-control-sm mb-2" style="width:80px; display:inline-block;">
+            <p class="fw-bold text-success mb-0">{{ format_currency(it.subtotal) }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Update Button -->
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-outline-primary">🔄 Update Cart</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="col-md-4">
+    <div class="card shadow-sm sticky-top" style="top:90px;">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">Order Summary</h5>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Subtotal</span>
+          <span>{{ format_currency(total) }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Shipping</span>
+          <span class="text-success">Free</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold">
+          <span>Total</span>
+          <span>{{ format_currency(total) }}</span>
+        </div>
+        <hr>
+        <a href="{{ url_for('checkout') }}" class="btn btn-success w-100 mt-2">Proceed to Checkout →</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="text-center mt-5">
+  <h4 class="text-muted">🛍 Your cart is empty</h4>
+  <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Continue Shopping</a>
+</div>
+{% endif %}
+
+<!-- CSS for Hover Effect -->
+<style>
+  .cart-item:hover {
+    background: #f9f9f9;
+    transform: scale(1.01);
+    transition: 0.2s ease-in-out;
+  }
+</style>
+
+{% endblock %}

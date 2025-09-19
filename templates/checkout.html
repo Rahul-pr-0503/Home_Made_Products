@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+
+<h2 class="fw-bold mb-4">🧾 Checkout</h2>
+<p class="text-muted">Pay securely using UPI — you’ll get a QR code on the next page.</p>
+
+<div class="row">
+  <!-- Left: Cart Items -->
+  <div class="col-md-7">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">Your Items</h5>
+        <ul class="list-group list-group-flush">
+          {% for it in items %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-0">{{ it.name }}</h6>
+              <small class="text-muted">Qty: {{ it.qty }} × {{ format_currency(it.price) }}</small>
+            </div>
+            <span class="fw-bold text-success">{{ format_currency(it.subtotal) }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Delivery & Order -->
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="fw-bold mb-3">📍 Delivery Address</h5>
+
+        {% if user %}
+        <div class="border rounded p-3 mb-3">
+          <p class="fw-bold mb-1">{{ user.name }} <span class="text-muted">({{ user.phone }})</span></p>
+          <p class="mb-1">{{ user.address }}</p> <!-- ✅ single address field -->
+          <p class="text-muted">{{ user.email }}</p>
+          <a href="{{ url_for('profile') }}" class="btn btn-link p-0 mt-2">✏️ Change or Add New Address</a>
+        </div>
+        {% else %}
+        <p class="text-danger">⚠️ Please <a href="{{ url_for('login') }}">login</a> to continue checkout.</p>
+        {% endif %}
+
+        <hr>
+        <h5 class="fw-bold mb-3">Order Summary</h5>
+        <div class="d-flex justify-content-between fw-bold mb-3">
+          <span>Total Payable</span>
+          <span class="text-success">{{ format_currency(total) }}</span>
+        </div>
+
+        {% if user %}
+        <form method="post" action="{{ url_for('checkout') }}">
+          <button type="submit" class="btn btn-success w-100 btn-lg">
+            ✅ Place Order & Generate QR
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card:hover {
+    transform: scale(1.01);
+    transition: 0.2s ease-in-out;
+  }
+</style>
+{% endblock %}

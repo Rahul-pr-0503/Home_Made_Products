@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+<div class="container my-5">
+    <h2 class="fw-bold mb-4 text-primary">📦 My Orders</h2>
+
+    {% if orders %}
+    {% for o in orders %}
+    <div class="card shadow-sm mb-4 border-0 rounded-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0 fw-bold">Order #{{ o.id }}</h5>
+                <span class="badge 
+              {% if o.status == 'delivered' %} bg-success 
+              {% elif o.status == 'shipped' %} bg-info text-dark
+              {% elif o.status == 'paid' %} bg-primary
+              {% elif o.status == 'cancelled' %} bg-danger
+              {% else %} bg-warning text-dark {% endif %}">
+                    {{ o.status | capitalize }}
+                </span>
+            </div>
+            <p class="text-muted mb-2"><small>Placed on {{ o.created_at }}</small></p>
+            <p class="fw-semibold">Total: ₹{{ o.total }}</p>
+
+            <ul class="list-group list-group-flush mb-3">
+                {% for it in o['items'] %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ it.qty }} × {{ it.name }}</span>
+                    <span class="text-muted">₹{{ it.price }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('order_summary', order_id=o.id) }}" class="btn btn-sm btn-outline-primary">View
+                    Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center py-5">
+        <h5 class="text-muted">You have not placed any orders yet.</h5>
+        <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+<div class="text-center my-5">
+    <h2 class="fw-bold text-primary">👨‍💻 Welcome Admin</h2>
+    <p class="lead text-muted">Choose what you want to manage today:</p>
+
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-lg btn-primary shadow">📦 Product Dashboard</a>
+        <a href="{{ url_for('admin_orders') }}" class="btn btn-lg btn-success shadow">🛒 Customer Orders</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" />
+</head>
+
+<div class="container mt-4">
+  <!-- Order Header -->
+  <div class="alert alert-info shadow-sm">
+    <h4 class="mb-0">✅ Order #{{ order['id'] }} placed successfully!</h4>
+    <small class="text-muted">Complete payment to confirm your order.</small>
+  </div>
+
+  <div class="row">
+    <!-- Left: Order Details -->
+    <div class="col-md-7">
+      <!-- Items -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3">Your Items</h5>
+          <ul class="list-group list-group-flush">
+            {% for it in items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="mb-0">{{ it.name }}</h6>
+                <small class="text-muted">Qty: {{ it.qty }} × {{ format_currency(it.price) }}</small>
+              </div>
+              <span class="fw-bold text-success">{{ format_currency(it.subtotal) }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          <div class="d-flex justify-content-between fw-bold mt-3">
+            <span>Total</span>
+            <span class="text-success">{{ format_currency(order['total']) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Info -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3">Delivery Address</h5>
+          <p class="mb-1">{{ order['buyer_name'] }} — {{ order['buyer_phone'] }}</p>
+          <p class="mb-0">{{ order['buyer_address'] }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Payment -->
+    <div class="col-md-5">
+      <div class="card shadow-sm text-center">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3">💳 Scan & Pay via UPI</h5>
+          <p class="text-muted">Scan this QR with any UPI app to pay <strong>{{ format_currency(order['total'])
+              }}</strong></p>
+          <img src="{{ url_for('static', filename='qrcodes/order_' ~ order['id'] ~ '.png') }}" alt="UPI QR"
+            class="img-fluid border rounded p-2 mb-3" style="max-width:240px;">
+
+          {% if order['txn_id'] %}
+          <div class="alert alert-success">
+            <p class="mb-1"><strong>Transaction ID:</strong> {{ order['txn_id'] }}</p>
+            <p class="mb-0"><strong>Status:</strong> {{ order['status'] }}</p>
+          </div>
+          {% else %}
+          <hr>
+          <h6 class="fw-bold">Already Paid?</h6>
+          <form method="post" action="{{ url_for('confirm_order', order_id=order['id']) }}">
+            <input type="text" name="txn_id" placeholder="Enter UPI Transaction ID (UTR)" class="form-control mb-2"
+              required>
+            <button class="btn btn-primary w-100">Submit Transaction ID</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hover Effect -->
+<style>
+  .card:hover {
+    transform: scale(1.01);
+    transition: 0.2s ease-in-out;
+  }
+</style>
+
+{% endblock %}
